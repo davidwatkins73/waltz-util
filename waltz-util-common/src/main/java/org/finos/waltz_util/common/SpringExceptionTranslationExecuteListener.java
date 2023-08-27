@@ -1,4 +1,4 @@
-package org.finos.waltz_util.loader;
+package org.finos.waltz_util.common;
 
 import org.jooq.ExecuteContext;
 import org.jooq.impl.DefaultExecuteListener;

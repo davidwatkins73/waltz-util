@@ -33,6 +33,7 @@
     <artifactId>waltz-util</artifactId>
     <version>0.1-SNAPSHOT</version>
     <modules>
+        <module>waltz-util-common</module>
         <module>waltz-util-schema</module>
         <module>waltz-util-loader</module>
 
