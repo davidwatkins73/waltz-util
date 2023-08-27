@@ -49,9 +49,6 @@ public class DIBaseConfiguration {
     @Value("${jooq.dialect}")
     private String dialect;
 
-    @Value("${database.performance.query.slow.threshold:10}")
-    private int databasePerformanceQuerySlowThreshold;
-
     @Bean
     public DataSource dataSource() {
 
