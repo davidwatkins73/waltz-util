@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.finos</groupId>
+        <artifactId>waltz-util</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.finos</groupId>
+    <artifactId>waltz-util-schema</artifactId>
+    <version>0.1-SNAPSHOT</version>
+
+
+    <build>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireProperty>
+                                    <property>database.url</property>
+                                    <message>Property 'database.url' must be specified, usually via a profile in your settings.xml file. See https://github.com/finos/waltz/blob/master/docs/development/build.md for more information</message>
+                                </requireProperty>
+                                <requireProperty>
+                                    <property>database.user</property>
+                                    <message>Property 'database.user' must be specified, usually via a profile in your settings.xml file. See https://github.com/finos/waltz/blob/master/docs/development/build.md for more information</message>
+                                </requireProperty>
+                                <requireProperty>
+                                    <property>jooq.group</property>
+                                    <message>Property 'jooq.group' must be specified, usually by selecting one of the in-built profiles in the waltz-schema/pom.xml file. See https://github.com/finos/waltz/blob/master/docs/development/build.md for more information</message>
+                                </requireProperty>
+                                <requireProperty>
+                                    <property>jdbc.driver</property>
+                                    <message>Property 'jdbc.driver' must be specified, usually by selecting one of the in-built profiles in the waltz-schema/pom.xml file. See https://github.com/finos/waltz/blob/master/docs/development/build.md for more information</message>
+                                </requireProperty>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- Specify the maven code generator plugin -->
+                <groupId>${jooq.group}</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
+
+                <!-- The plugin should hook into the generate goal -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>${jdbc.group}</groupId>
+                        <artifactId>${jdbc.artifact}</artifactId>
+                        <version>${jdbc.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <!-- Specify the plugin configuration.
+                     The configuration format is the same as for the standalone code generator -->
+                <configuration>
+
+                    <!-- JDBC connection parameters -->
+                    <jdbc>
+                        <driver>${jdbc.driver}</driver>
+                        <url>${database.url}</url>
+                        <user>${database.user}</user>
+                        <password>${database.password}</password>
+                    </jdbc>
+
+
+                    <!-- Generator parameters -->
+                    <generator>
+                        <generate>
+                            <javaTimeTypes>false</javaTimeTypes>
+                        </generate>
+                        <database>
+                            <name>${jooq.database}</name>
+                            <inputSchema>${database.schema}</inputSchema>
+                            <inputCatalog>${database.catalog}</inputCatalog>
+                            <outputSchemaToDefault>true</outputSchemaToDefault>
+                        </database>
+
+                        <target>
+                            <packageName>org.finos.waltz_util.schema</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <finalName>liquibase-scripts</finalName>
+                    <descriptors>
+                        <descriptor>assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-archive</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
