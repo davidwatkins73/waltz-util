@@ -1,0 +1,9 @@
+[
+  {
+    "employee_id": "999111",
+    "name": "John Doe",
+    "email": "abc@123.cop",
+    "kind": "EMPLOYEE",
+    "organisational_unit_id": "OU_1"
+  }
+]
